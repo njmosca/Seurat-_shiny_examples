@@ -1,0 +1,106 @@
+---
+title: "analyst_project4"
+output: html_document
+---
+
+novel marker genes: other genes that do not have associated cell types, list of genes 
+how we find them- filter by logfoldchange (positive)
+
+
+```{r}
+# load data in
+library(dplyr)
+library(Seurat)
+library(ggplot2)
+library(scatterplot3d)
+seurat_dataset <- readRDS("GSM2230760_seurat.rda")
+
+
+
+```
+
+
+
+```{r}
+#unfiltered DE
+# Diff expression based on log fold change (whole)
+#clustering
+
+diff_expressed_genes <- FindAllMarkers(seurat_dataset, max.cells.per.ident = Inf)
+
+
+
+
+```
+
+```{r}
+# top marker genes per cell cluster 
+
+#Top 3 diff expressed genes per cluster based on whole data set (whole)
+
+#pos
+top_diff_expressed_genes <- diff_expressed_genes %>% group_by(cluster) %>% top_n(n = 3, wt = avg_log2FC )
+
+low_diff_expressed_genes <- diff_expressed_genes %>% group_by(cluster) %>% top_n(n = -3, wt = avg_log2FC )
+
+#write.csv(top_diff_expressed_genes,"top_DE_genes.csv")
+
+```
+
+
+```{r}
+#plot cell types 
+# creating id with labeled cell types
+new.cluster.ids <- c("Delta", "Beta", "Fibroblast", "Acinar", "Alpha", "Ductal", 
+    "Beta", "Oligodendrocyte", "Neuron","Fibroblast","Enterocyte","Enterocyte","Macrophage")
+
+
+#assigning new names in dataset
+names(new.cluster.ids) <- levels(seurat_dataset)
+
+#renaming clusters in dataset
+seurat_dataset <- RenameIdents(seurat_dataset, new.cluster.ids)
+
+
+#plotting with cell type names
+umap <- DimPlot(seurat_dataset, reduction = "umap", pt.size = 0.5, label = TRUE)
+#changing x and y labels 
+umap + xlab('UMAP 1') + ylab('UMAP 2')
+
+
+
+```
+
+
+
+
+```{r}
+# heatmap
+
+#have to play with formatting
+heatmap <- DoHeatmap(seurat_dataset, features = top_diff_expressed_genes$gene,size = 3.0,disp.max = 4,angle = 105,label=TRUE) + NoLegend()
+
+#dev.off()
+
+
+
+```
+
+
+```{r}
+# novel marker genes
+# dif expression with posative filtering 
+#novel markers genes based on cell type
+novel_marker_genes <- FindAllMarkers(seurat_dataset, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.50,verbose = TRUE,pseudocount.use = 1)
+novel_list <- novel_marker_genes %>% group_by(cluster) %>% top_n(n = 1, wt = avg_log2FC)
+
+#write.csv(novel_list,"novel.csv")
+#labeled Full DE results 
+
+Labeled_diff_expressed_genes <- FindAllMarkers(seurat_dataset, max.cells.per.ident = Inf,verbose = TRUE)
+
+write.csv(Labeled_diff_expressed_genes,"Labeled_DE_genes.csv")
+
+
+```
+
