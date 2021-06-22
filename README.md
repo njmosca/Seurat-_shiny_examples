@@ -3,5 +3,6 @@
 Analysis is part of a BF528 project at Boston University. Raw data was downloaded from Boston University's SCC cluster. More info found here : https://bf528.readthedocs.io/en/latest/content/projects/project_4_scrnaseq/project_4_scrnaseq.html
 
 
-
+Shiny app that allows the viewer to explore gene expression data based on tissue or cell type source
 Shiny app Dashboard: https://njmosca.shinyapps.io/RNA-CCeq_app/
+Github repo: https://github.com/sussmanbu/final-project-rna-cceq
