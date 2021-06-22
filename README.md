@@ -5,4 +5,3 @@ Analysis is part of a BF528 project at Boston University. Raw data was downloade
 
 Shiny app that allows the viewer to explore gene expression data based on tissue or cell type source
 Shiny app Dashboard: https://njmosca.shinyapps.io/RNA-CCeq_app/
-Github repo: https://github.com/sussmanbu/final-project-rna-cceq
